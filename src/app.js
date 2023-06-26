@@ -10,7 +10,7 @@ let users = [];
 
 app.get("/tweets", (req, res) => {
   if (tweets.length > 0) {
-    const lastTweets = tweets.slice(-10).reverse()
+    const lastTweets = tweets.slice(-10).reverse();
     res.send(lastTweets);
     return;
   }
@@ -19,20 +19,39 @@ app.get("/tweets", (req, res) => {
 
 app.post("/sign-up", (req, res) => {
   const { username, avatar } = req.body;
+  if (username === "" || avatar === "") {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
+  if (!username || !avatar) {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
+  if (typeof username !== "string" || typeof avatar !== "string") {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
   const newUser = {
     username,
     avatar,
   };
   users.push(newUser);
-  res.send("OK");
+  res.status(201).send("OK");
 });
 
 app.post("/tweets", (req, res) => {
   const { username, tweet } = req.body;
   const userValidate = users.find((element) => element.username === username);
+
+  if (username === "" || tweet === "") {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
   if (userValidate === undefined) {
-    res.send("UNAUTHORIZED");
+    res.status(401).send("UNAUTHORIZED");
     return;
+  }
+  if (!username || !tweet) {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  }
+  if (typeof username !== "string" || typeof tweet !== "string") {
+    return res.status(400).send("Todos os campos são obrigatórios!");
   }
   const tweetObj = {
     username,
@@ -40,7 +59,7 @@ app.post("/tweets", (req, res) => {
     tweet,
   };
   tweets.push(tweetObj);
-  res.send("OK");
+  res.status(201).send("OK");
 });
 
 const PORT = 5000;
